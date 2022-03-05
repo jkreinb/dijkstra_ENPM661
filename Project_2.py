@@ -220,3 +220,63 @@ def Find_Node(list,node_index):
     for i in range(len(list)):
         if list[i][1]==node_index:
             return list[i]
+
+# Algorithm to generate goal path, takes parent nodes of goal location until
+# backtracked to initial point, reverses stack and returns list of nodes to goal
+def Backtrack(ClosedList):
+    goal = ClosedList.pop()
+    reverse = []
+    reverse.append(goal)
+    while reverse[-1][2] > 0:
+        parent = Find_Node(ClosedList,reverse[-1][2])
+        reverse.append(parent)
+    route = []
+    while reverse:
+        UpdateGoal(reverse[-1])
+        UpdateImage()
+        route.append(reverse.pop())
+    return route
+
+# dijkstra algorithm that uses action sets to search for input goal location
+def dijkstra(start_node,goal_node,c2c_node):
+    goal_found = False
+    #Open/Closed List creation
+    OpenList = []
+    ClosedList = []
+    hq.heappush(OpenList,(0,1,0,start_node))  #Pushes starting node into OpenList
+    iterator = 0
+    while OpenList and goal_found == False:
+        current_node = hq.heappop(OpenList)
+        ClosedList.append(current_node)
+        if current_node[3] == goal_node:
+            goal_found = True
+            print("Goal Found!")
+            goal_route = Backtrack(ClosedList)
+            return goal_route
+        else:
+            iterator = iterator + 1
+            new_nodeE = MoveE(current_node)
+            Check_Node(new_nodeE,ClosedList,OpenList,c2c_node)
+            new_nodeS = MoveS(current_node)
+            Check_Node(new_nodeS,ClosedList,OpenList,c2c_node)
+            new_nodeW = MoveW(current_node)
+            Check_Node(new_nodeW,ClosedList,OpenList,c2c_node)
+            new_nodeN = MoveN(current_node)
+            Check_Node(new_nodeN,ClosedList,OpenList,c2c_node)
+            new_nodeSE = MoveSE(current_node)
+            Check_Node(new_nodeSE,ClosedList,OpenList,c2c_node)
+            new_nodeSW = MoveSW(current_node)
+            Check_Node(new_nodeSW,ClosedList,OpenList,c2c_node)
+            new_nodeNW = MoveNW(current_node)
+            Check_Node(new_nodeNW,ClosedList,OpenList,c2c_node)
+            new_nodeNE = MoveNE(current_node)
+            Check_Node(new_nodeNE,ClosedList,OpenList,c2c_node)
+            if iterator % 100 == 0: # Only updates image every 100 nodes for speed
+                UpdateImage()
+    if goal_found == False:
+        print("No Goal Found!")
+            
+goal_route = dijkstra(start_node,goal_node,c2c_node)
+print("Press '0' to exit")
+cv.waitKey(0)
+print("Runtime: ",time.time()-start_time, " seconds")
