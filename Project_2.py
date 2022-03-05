@@ -133,3 +133,44 @@ for x in range(0,400,1):
         elif math.floor(((x-300)**2)+((y-185)**2)) < (45**2): 
             c2c_node[y][x] = -1
             image[y,x]= [255,0,0]
+
+# Creates variables for setting goal/start locations
+goal_set = False
+start_set = False
+
+# Goal setting loop
+while goal_set == False:
+    print("\nPlease enter a goal location on the workspace\n")
+    print("-------------------------------------------------------\n")
+    goal_x = int(input("Enter X position of goal node, must be an integer between 0-400\n"))
+    goal_y = int(input("Enter Y position of goal node, must be an integer between 0-250\n"))
+    if goal_x < 0 or goal_x > 400 or goal_y > 250 or goal_y < 0: # Checks if goal is outside of workspace
+        print("\nGoal outside of workspace! Please try again\n")
+        time.sleep(2)
+        continue
+    elif c2c_node[goal_y][goal_x] == np.inf:
+        goal_set = True
+    else: # If goal is not equal to np.inf it's an obstacle, prompts user again for new goal
+        print("\nGoal location is ontop of an obstacle! Please enter new goal location\n")
+        time.sleep(2)
+
+while start_set == False:
+    print("\nPlease enter a starting location on the workspace\n")
+    print("-------------------------------------------------------\n")
+    start_x = int(input("Enter X position of start node, must be an integer between 0-400\n"))
+    start_y = int(input("Enter Y position of start node, must be an integer between 0-250\n"))
+    if start_x < 0 or start_x > 400 or start_y > 250 or start_y < 0: # Checks if start is outside workspace
+        print("\nStarting location is outside of workspace! Please try again\n")
+        time.sleep(2)
+        continue
+    elif c2c_node[start_y][start_x] == np.inf:
+        start_set = True
+    else: # If start is not equal to np.inf it's an obstacle, prompts user again for new start
+        print("\nStarting location is ontop of an obstacle! Please enter new starting location\n")
+        time.sleep(2)
+
+goal_node = (goal_y,goal_x)
+start_node = (start_y,start_x)
+
+print("\nGoal node is:\n",goal_node)
+print("\nStart node is:\n",start_node)
