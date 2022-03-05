@@ -174,3 +174,49 @@ start_node = (start_y,start_x)
 
 print("\nGoal node is:\n",goal_node)
 print("\nStart node is:\n",start_node)
+
+
+# Creates window showing obstacle
+flipped_image=cv.flip(image,0)
+cv.imshow("actual_image",flipped_image)
+cv.waitKey(10)
+
+# Checks if an input node is inside of a list
+def Check_List(new_node,list):
+    for i in range(len(list)):
+        if list[i][3] == new_node[3]:
+            return True
+        else:
+            return False
+       
+# Updates pixels to white in image for searched nodes 
+def UpdateSearched(node):
+    flipped_image[250-node[3][0],node[3][1]]= [255,255,255]
+
+# Updates pixels to green in image for goal nodes 
+def UpdateGoal(node):
+    flipped_image[250-node[3][0],node[3][1]]= [0,255,0]
+
+# Calls cv.imshow to update image, scales image up 4X
+def UpdateImage():
+        resized = cv.resize(flipped_image,(1600,1000))
+        cv.imshow("image",resized)
+        cv.waitKey(1)
+
+# Checks if node is not in obstacle space, has been searched, if lower cost found
+# updates the cost respectively
+def Check_Node(new_node,ClosedList,OpenList,c2c_node):
+    if Check_List(new_node,ClosedList) == False and c2c_node[new_node[3]] != -1:
+        if (Check_List(new_node,OpenList) == False or Check_List(new_node,OpenList) == None) and c2c_node[new_node[3]]==np.inf:
+            c2c_node[new_node[3]] = new_node[0]
+            UpdateSearched(new_node)
+            hq.heappush(OpenList,new_node)
+        else:
+            if (new_node[0] < c2c_node[new_node[3]]):
+                c2c_node[new_node[3]] = new_node[0]
+
+# Finds a node_index within a list
+def Find_Node(list,node_index):
+    for i in range(len(list)):
+        if list[i][1]==node_index:
+            return list[i]
